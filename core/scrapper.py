@@ -1,18 +1,45 @@
 import os
 import json
+import asyncio
 import subprocess
-from typing import List
 from logging import Logger
+from typing import List, Coroutine, Any
 from helpers.config import Settings
-from core.types import (JobSubmissionResult, JobSubmissionInfo,
-                        JobProgressResult, VideosResult, 
-                        VideosInfo, VideoInfo, SigleTranscript)
+from core.types import (JobSubmissionResult, JobSubmissionInfo, JobResult,
+                        JobProgressResult, JobResultOrNone, VideosPath,
+                        VideoPath, VideosInfo, VideoInfo, SigleTranscript)
 
 class YouTubeScrapper:
     
     def __init__(self, settings: Settings, logger: Logger):
         self.settings = settings
         self.logger = logger
+        self.save_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "transcripts",
+        )
+        
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
+    
+    async def _save_transcipt(self, video_info: VideoInfo) -> VideoPath:
+        
+        video_id = video_info["shortcode"]
+        
+        file_save_path = os.path.join(
+            self.save_path,
+            f"{video_id}.txt",
+        )
+        
+        with open(file_save_path, "w") as f:
+            transcript = video_info["formatted_transcript"]
+            for single_transcript in transcript:
+                text = single_transcript["text"]
+                start_time = single_transcript["start_time"]
+                end_time = single_transcript["end_time"]
+                f.write(f"({start_time:.2f}-{end_time:.2f}): {text}\n")
+                
+        return file_save_path
     
     async def submit_job(
         self,
@@ -43,7 +70,7 @@ class YouTubeScrapper:
             "curl",
             "-H", f"Authorization: Bearer {api_key}",
             "-H", "Content-Type: application/json",
-            "-d", json.dumps(payload),  # Convert payload to JSON string
+            "-d", json.dumps(payload),
             endpoint
         ]
         
@@ -85,7 +112,10 @@ class YouTubeScrapper:
             self.logger.error(f"Error: {result.stderr}")
             return None
 
-    async def get_job_result(self, snapshot: JobSubmissionInfo) -> VideosResult:
+    async def get_job_result(
+        self, 
+        snapshot: JobSubmissionInfo
+    ) -> JobResultOrNone:
         api_key = self.settings.BRIGHT_DATA_API_KEY
         output_format = self.settings.BRIGHT_DATA_API_OUTPUT_FORMAT
         snapshot_id = snapshot["snapshot_id"]
@@ -104,6 +134,7 @@ class YouTubeScrapper:
         
         contents = json.loads(result.stdout.strip())
         videos_info: VideosInfo = []
+        videos_path_operation: List[Coroutine[Any, Any, VideoPath]] = []
         
         for content in contents:
             
@@ -118,6 +149,15 @@ class YouTubeScrapper:
                 formatted_transcript=video_transcript,
             )
             
+            videos_path_operation.append(self._save_transcipt(video_info=video_info))
+            
             videos_info.append(video_info)
+
+        videos_path: VideosPath = await asyncio.gather(*videos_path_operation)
         
-        return videos_info
+        job_result = JobResult(
+            videos_info=videos_info,
+            videos_path=videos_path,
+        )        
+        
+        return job_result
