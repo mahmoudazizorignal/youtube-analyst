@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     BRIGHT_DATA_API_POSTS_COUNT: int
     BRIGHT_DATA_API_OUTPUT_FORMAT: str
     
+    OLLAMA_MODEL_ID: str
+    OLLAMA_URL: str
+    
     class Config:
         env_file = ".env"
 
