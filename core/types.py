@@ -1,6 +1,7 @@
 from crewai.crews.crew_output import CrewOutput
 from crewai.types.streaming import CrewStreamingOutput
 from typing import TypedDict, Union, Literal, List
+from core.scrapper import YouTubeScrapper
 
 class JobSubmissionInfo(TypedDict):
     snapshot_id: str
@@ -25,7 +26,17 @@ class VideoInfo(TypedDict):
     shortcode: str
     formatted_transcript: List[SigleTranscript]
 
+VideoPath = str
+
 VideosInfo = List[VideoInfo]
-VideosResult = Union[VideosInfo, None]
+VideosPath = List[VideoPath]
+
+class JobResult(TypedDict):
+    videos_info: VideosInfo
+    videos_path: VideosPath
+
+JobResultOrNone = Union[JobResult, None]
 
 CrewResponse = Union[CrewOutput, CrewStreamingOutput]
+
+Scrapper = Union[YouTubeScrapper]
