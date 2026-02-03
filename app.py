@@ -17,11 +17,10 @@ logger = logging.getLogger(__name__)
 
 @st.cache_resource
 def get_llm() -> LLM:
-    
+
     llm = LLM(
         model=settings.OLLAMA_MODEL_ID,
         base_url=settings.OLLAMA_URL,
-        format="json",
     )
     
     return llm
