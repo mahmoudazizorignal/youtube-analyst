@@ -18,7 +18,7 @@ class Crew:
         self.file_read_tool = FileReadTool()
         self.config_path = os.path.join(
             os.path.dirname(__file__),
-            "config.yaml",
+            "assets/config.yaml",
         )
         with open(self.config_path, "r") as file:
             self.config = yaml.safe_load(file)
