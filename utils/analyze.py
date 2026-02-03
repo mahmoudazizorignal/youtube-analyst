@@ -81,7 +81,7 @@ def scrape_channels(
 
                     if video_idx < num_videos:
                         with cols[col_idx]:
-                            st.video(job_result['videos_info'][row]['url'])
+                            st.video(job_result['videos_info'][video_idx]['url'])
 
         status_container.success("Scraping complete! We shall now analyze the videos and report trends...")
     
