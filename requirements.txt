@@ -3,3 +3,4 @@ ollama==0.6.1
 crewai==1.9.3
 crewai-tools==1.9.3
 crewai[litellm]==1.9.3
+crewai[google-genai]==1.9.3
