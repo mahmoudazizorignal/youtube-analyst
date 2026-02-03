@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     OLLAMA_MODEL_ID: str
     OLLAMA_URL: str
     
+    VIDEOS_PER_ROW: int
+
     class Config:
         env_file = ".env"
 
