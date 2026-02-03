@@ -30,6 +30,7 @@ class Crew:
             verbose=verbose,
             tools=[self.file_read_tool],
             llm=llm,
+            allow_delegation=False,
         )
 
         self.response_synthesizer_agent = Agent(
@@ -38,6 +39,7 @@ class Crew:
             backstory=self.config["agents"][1]["backstory"],
             verbose=verbose,
             llm=llm,
+            allow_delegation=False,
         )
 
         self.analysis_task = Task(
