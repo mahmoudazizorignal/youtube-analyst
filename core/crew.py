@@ -43,13 +43,15 @@ class Crew:
         self.analysis_task = Task(
             description=self.config["tasks"][0]["description"],
             expected_output=self.config["tasks"][0]["expected_output"],
-            agent=self.analysis_agent
+            agent=self.analysis_agent,
+            output_file="analysis_task.txt",
         )
 
         self.response_task = Task(
             description=self.config["tasks"][1]["description"],
             expected_output=self.config["tasks"][1]["expected_output"],
-            agent=self.response_synthesizer_agent
+            agent=self.response_synthesizer_agent,
+            output_file="response_task.txt",
         )
         
         self.crew = crewai_crew(
