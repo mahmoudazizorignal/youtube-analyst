@@ -87,9 +87,9 @@ class YouTubeScrapper:
             self.logger.error("Failed to parse JSON response.")
             return None
 
-    async def get_job_progress(self, snapshot: JobSubmissionInfo) -> JobProgressResult:
+    async def get_job_progress(self, job_submission_info: JobSubmissionInfo) -> JobProgressResult:
         api_key = self.settings.BRIGHT_DATA_API_KEY
-        snapshot_id = snapshot["snapshot_id"]
+        snapshot_id = job_submission_info["snapshot_id"]
         
         command = [
             "curl",
@@ -114,11 +114,11 @@ class YouTubeScrapper:
 
     async def get_job_result(
         self, 
-        snapshot: JobSubmissionInfo
+        job_submission_info: JobSubmissionInfo
     ) -> JobResultOrNone:
         api_key = self.settings.BRIGHT_DATA_API_KEY
         output_format = self.settings.BRIGHT_DATA_API_OUTPUT_FORMAT
-        snapshot_id = snapshot["snapshot_id"]
+        snapshot_id = job_submission_info["snapshot_id"]
         
         command = [
             "curl",
