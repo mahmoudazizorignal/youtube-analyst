@@ -14,10 +14,10 @@ from crewai_tools import FileReadTool
 
 class Crew:
     
-    def __init__(self, llm: LLM | None, verbose: bool = False):
+    def __init__(self, llm: LLM, verbose: bool = False):
         self.file_read_tool = FileReadTool()
         self.config_path = os.path.join(
-            os.path.dirname(__file__),
+            os.path.dirname( os.path.dirname(__file__) ),
             "assets/config.yaml",
         )
         with open(self.config_path, "r") as file:
