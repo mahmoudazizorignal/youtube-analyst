@@ -1,6 +1,7 @@
 from crewai.crews.crew_output import CrewOutput
 from crewai.types.streaming import CrewStreamingOutput
 from typing import TypedDict, Union, Literal, List
+from core.models import JobProgressValues
 
 class JobSubmissionInfo(TypedDict):
     snapshot_id: str
@@ -8,7 +9,7 @@ class JobSubmissionInfo(TypedDict):
 JobSubmissionResult = Union[JobSubmissionInfo, None]
 
 class JobProgressInfo(TypedDict):
-    status: Literal["ready", "failed", "running"]
+    status: JobProgressValues
     snapshot_id: str
     dataset_id: str
 
